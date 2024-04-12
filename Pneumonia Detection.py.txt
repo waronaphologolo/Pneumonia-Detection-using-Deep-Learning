@@ -1,0 +1,26 @@
+# Load the pre-trained deep learning model
+model = load_model('pneumonia_classifier_model.h5')
+
+# Define a function to preprocess the input image
+def preprocess_image(img_path):
+    img = image.load_img(img_path, target_size=(150, 150))
+    img_array = image.img_to_array(img)
+    img_array /= 255.0  # Normalize pixel values
+    img_array = np.expand_dims(img_array, axis=0)
+    return img_array
+
+# Define a function to make predictions
+def predict_pneumonia(img_path):
+    img_array = preprocess_image(img_path)
+    prediction = model.predict(img_array)
+    if prediction[0][0] > 0.5:
+        return "Pneumonia detected"
+    else:
+        return "No pneumonia detected"
+
+# Test the model with sample X-ray images
+test_images = ['test_image1.jpg', 'test_image2.jpg', 'test_image3.jpg']
+
+for img_path in test_images:
+    prediction = predict_pneumonia(img_path)
+    print(f"Image: {img_path} - Prediction: {prediction}")
